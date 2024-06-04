@@ -33,7 +33,7 @@ const IndexPage = () => {
           </TouchableOpacity>
         </Link>
         <Link
-          href="/(auth)/sign-up"
+          href="/sign-up"
           asChild
           style={[
             defaultStyles.pillButton,
