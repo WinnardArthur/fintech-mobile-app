@@ -72,6 +72,7 @@ const SignUpPage = () => {
           }`}
           disabled={!credentials.phoneNumber}
           activeOpacity={0.7}
+          onPress={handleSignUp}
         >
           <Text style={[defaultStyles.buttonText]}>Sign up</Text>
         </TouchableOpacity>
