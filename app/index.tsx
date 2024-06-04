@@ -21,7 +21,7 @@ const IndexPage = () => {
 
       <View className="flex-row gap-5 mb-[60] px-5">
         <Link
-          href="/(auth)/login"
+          href="/login"
           asChild
           style={[
             defaultStyles.pillButton,
