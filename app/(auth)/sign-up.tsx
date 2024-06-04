@@ -41,14 +41,14 @@ const SignUpPage = () => {
           <TextInput
             placeholder="Country code"
             keyboardType="numeric"
-            className="bg-gray-300 block w-24 p-[18] rounded-[16px] text-[20px]"
+            className="bg-neutral-200 block w-24 p-[18] rounded-[16px] text-[20px]"
             placeholderTextColor={Colors.gray}
             value={credentials.countryCode}
           />
           <TextInput
             placeholder="Mobile number"
             keyboardType="numeric"
-            className="bg-gray-300 flex-1 p-[18] rounded-[16px] text-[20px]"
+            className="bg-neutral-200 flex-1 p-[18] rounded-[16px] text-[20px]"
             placeholderTextColor={Colors.gray}
             value={credentials.phoneNumber}
             onChangeText={(e) =>
@@ -59,7 +59,10 @@ const SignUpPage = () => {
 
         <Link href="/login" asChild replace>
           <TouchableOpacity activeOpacity={0.7}>
-            <Text style={defaultStyles.textLink} className="text-center">
+            <Text
+              style={defaultStyles.textLink}
+              className="text-center opacity-80"
+            >
               Already have an account? Log in
             </Text>
           </TouchableOpacity>
@@ -68,7 +71,7 @@ const SignUpPage = () => {
         <TouchableOpacity
           style={[defaultStyles.pillButton]}
           className={`mt-auto ${
-            !!credentials.phoneNumber ? "bg-dark" : "bg-gray"
+            !!credentials.phoneNumber ? "bg-primary" : "bg-primary-muted"
           }`}
           disabled={!credentials.phoneNumber}
           activeOpacity={0.7}

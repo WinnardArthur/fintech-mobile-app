@@ -52,14 +52,14 @@ const LoginPage = () => {
           <TextInput
             placeholder="Country code"
             keyboardType="numeric"
-            className="bg-gray-300 block w-24 p-[18] rounded-[16px] text-[20px]"
+            className="bg-neutral-200 block w-24 p-[18] rounded-[16px] text-[20px]"
             placeholderTextColor={Colors.gray}
             value={credentials.countryCode}
           />
           <TextInput
             placeholder="Mobile number"
             keyboardType="numeric"
-            className="bg-gray-300 flex-1 p-[18] rounded-[16px] text-[20px]"
+            className="bg-neutral-200 flex-1 p-[18] rounded-[16px] text-[20px]"
             placeholderTextColor={Colors.gray}
             value={credentials.phoneNumber}
             onChangeText={(e) =>
@@ -70,7 +70,7 @@ const LoginPage = () => {
 
         <TouchableOpacity
           style={[defaultStyles.pillButton]}
-          className={`${!!credentials.phoneNumber ? "bg-dark" : "bg-gray"}`}
+          className={`${!!credentials.phoneNumber ? "bg-primary" : "bg-primary-muted text-black"}`}
           disabled={!credentials.phoneNumber}
           activeOpacity={0.7}
           onPress={() => handleSignIn(SignInType.Phone)}
