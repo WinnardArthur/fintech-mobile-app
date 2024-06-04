@@ -39,6 +39,10 @@ const InitialRootLayout = () => {
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="help"
+        options={{ title: "Help", presentation: "modal" }}
+      />
     </Stack>
   );
 };
