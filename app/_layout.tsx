@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { ClerkProvider } from "@clerk/clerk-expo";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
 import "react-native-reanimated";
 
@@ -42,6 +42,8 @@ const InitialRootLayout = () => {
     ...FontAwesome.font,
   });
 
+  const { isLoaded, isSignedIn } = useAuth();
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
@@ -52,6 +54,10 @@ const InitialRootLayout = () => {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    console.log({ isSignedIn });
+  }, [isSignedIn]);
 
   if (!loaded) {
     return null;

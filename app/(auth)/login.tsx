@@ -5,13 +5,15 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
-import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { isClerkAPIResponseError, useSignIn } from "@clerk/clerk-expo";
+import { router } from "expo-router";
 
 enum SignInType {
   Phone,
@@ -21,6 +23,7 @@ enum SignInType {
 }
 
 const LoginPage = () => {
+  const { signIn } = useSignIn();
   const [credentials, setCredentials] = useState({
     countryCode: "+233",
     phoneNumber: "",
@@ -31,6 +34,36 @@ const LoginPage = () => {
   // Handle Sign up
   const handleSignIn = async (type: SignInType) => {
     if (type === SignInType.Phone) {
+      try {
+        const fullNumber = `${credentials.countryCode}${credentials.phoneNumber}`;
+
+        const { supportedFirstFactors } = await signIn!.create({
+          identifier: fullNumber,
+        });
+
+        const firstPhoneFactor: any = supportedFirstFactors.find(
+          (factor: any) => factor.strategy === "phone_code"
+        );
+
+        const { phoneNumberId } = firstPhoneFactor;
+
+        await signIn?.prepareFirstFactor({
+          strategy: "phone_code",
+          phoneNumberId,
+        });
+
+        router.push({
+          pathname: "/verify/[phone]",
+          params: { phone: fullNumber, signin: "true" },
+        });
+      } catch (error) {
+        console.log("error", JSON.stringify(error, null, 2));
+        if (isClerkAPIResponseError(error)) {
+          if (error.errors[0].code === "form_identifier_not_found") {
+            Alert.alert("Error", error.errors[0].message);
+          }
+        }
+      }
     }
   };
 
@@ -70,7 +103,11 @@ const LoginPage = () => {
 
         <TouchableOpacity
           style={[defaultStyles.pillButton]}
-          className={`${!!credentials.phoneNumber ? "bg-primary" : "bg-primary-muted text-black"}`}
+          className={`${
+            !!credentials.phoneNumber
+              ? "bg-primary"
+              : "bg-primary-muted text-black"
+          }`}
           disabled={!credentials.phoneNumber}
           activeOpacity={0.7}
           onPress={() => handleSignIn(SignInType.Phone)}
