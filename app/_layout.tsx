@@ -1,11 +1,12 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, router, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
+import { Text } from "react-native";
 import "react-native-reanimated";
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -43,6 +44,7 @@ const InitialRootLayout = () => {
   });
 
   const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -56,11 +58,19 @@ const InitialRootLayout = () => {
   }, [loaded]);
 
   useEffect(() => {
-    console.log({ isSignedIn });
-  }, [isSignedIn]);
+    if (!isLoaded) return;
 
-  if (!loaded) {
-    return null;
+    const inAuthGroup = segments[0] === "(authenticated)";
+
+    if (isSignedIn && !inAuthGroup) {
+      router.replace("/(authenticated)/(tabs)/home");
+    } else if (!isSignedIn) {
+      router.replace("/");
+    }
+  }, [isSignedIn, router, segments]);
+
+  if (!loaded || !isLoaded) {
+    return <Text>Loading...</Text>;
   }
 
   return (
@@ -70,6 +80,10 @@ const InitialRootLayout = () => {
       <Stack.Screen
         name="help"
         options={{ title: "Help", presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="(authenticated)/(tabs)"
+        options={{ headerShown: false }}
       />
     </Stack>
   );
