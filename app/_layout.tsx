@@ -64,9 +64,9 @@ const InitialRootLayout = () => {
 
     if (isSignedIn && !inAuthGroup) {
       router.replace("/(authenticated)/(tabs)/home");
-    } else if (!isSignedIn) {
+    } else if (!isSignedIn && inAuthGroup) {
       router.replace("/");
-    }
+    } else return;
   }, [isSignedIn, router, segments]);
 
   if (!loaded || !isLoaded) {
