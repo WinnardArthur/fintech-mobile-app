@@ -6,6 +6,7 @@ import { balanceStore } from "@/store/balance-store";
 import { defaultStyles } from "@/constants/Styles";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
+import WidgetList from "@/components/sortable-list/widget-list";
 
 const balance = 1820;
 
@@ -78,6 +79,9 @@ const Homepage = () => {
           ))}
         </View>
       </View>
+
+      <Text style={defaultStyles.sectionHeader}>Widgets</Text>
+      <WidgetList />
     </ScrollView>
   );
 };
