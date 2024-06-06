@@ -17,7 +17,7 @@ export const RoundButton = ({ text, icon, onPress }: RoundButtonProps) => {
       className="items-center gap-[10]"
       onPress={onPress}
     >
-      <View className="w-[60] h-[60] rounded-full bg-light-gray justify-center items-center">
+      <View className="w-[55] h-[55] rounded-full bg-light-gray justify-center items-center">
         <Ionicons name={icon} size={30} color={Colors.dark} />
       </View>
       <Text className="text-[16px] font-medium text-dark">{text}</Text>
