@@ -7,10 +7,10 @@ import { defaultStyles } from "@/constants/Styles";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 import WidgetList from "@/components/sortable-list/widget-list";
-
-const balance = 1820;
+import { useHeaderHeight } from "@react-navigation/elements";
 
 const Homepage = () => {
+  const headerHeight = useHeaderHeight();
   const { balance, runTransaction, transactions, clearTransactions } =
     balanceStore();
 
@@ -25,7 +25,10 @@ const Homepage = () => {
   };
 
   return (
-    <ScrollView className="">
+    <ScrollView
+      className=""
+      contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 60 }}
+    >
       <View className="m-[80] items-center">
         <View className="flex-row items-baseline justify-center gap-[10]">
           <Text className="text-[60px] font-bold">{balance()}</Text>
