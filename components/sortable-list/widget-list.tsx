@@ -1,5 +1,4 @@
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import { MARGIN } from "./config";
 import Tile from "./tile";
@@ -23,22 +22,22 @@ const tiles = [
 
 const WidgetList = () => {
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: "black", paddingHorizontal: MARGIN }}
-    >
+    <View style={{ paddingHorizontal: MARGIN }}>
       <SortableList
         editing={true}
         onDragEnd={(positions) =>
           console.log(JSON.stringify(positions, null, 2))
         }
       >
-        {[...tiles, ...tiles].map((tile, index) => (
-          <View>
-            
-          </View>
+        {[...tiles].map((tile, index) => (
+          <Tile
+            key={tile.id + "-" + index}
+            id={tile.id}
+            onLongPress={() => true}
+          />
         ))}
       </SortableList>
-    </SafeAreaView>
+    </View>
   );
 };
 

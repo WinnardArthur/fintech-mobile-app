@@ -12,7 +12,7 @@ interface TileProps {
 }
 
 const Tile = ({ id }: TileProps) => {
-  const { transactions } = balanceStore();
+  const { transactions, balance } = balanceStore();
 
   if (id === "spent") {
     return (
@@ -20,7 +20,7 @@ const Tile = ({ id }: TileProps) => {
         <Text className="text-gray font-medium text-[16px]">
           Spent this month
         </Text>
-        <Text className="text-dark font-bold text-[26px] pt-[10]">1024$</Text>
+        <Text className="text-dark font-bold text-[26px] pt-[10]">{balance()}$</Text>
       </View>
     );
   }
@@ -33,7 +33,7 @@ const Tile = ({ id }: TileProps) => {
         pointerEvents="none"
       >
         <View className="items-center justify-center gap-[10]">
-          <View>
+          <View className="h-[60] w-[60] rounded-full bg-primary items-center justify-center">
             <Text className="text-white font-bold text-[18px]">5%</Text>
           </View>
           <Text className="text-gray font-bold text-[18px]">Cashback</Text>
@@ -59,10 +59,10 @@ const Tile = ({ id }: TileProps) => {
           {transactions.length > 0 && (
             <>
               <Text className="text-dark font-bold text-[18px] py-[10]">
-                {transactions[transactions.length - 1].amount}$
+                {transactions[0].amount}$
               </Text>
               <Text className="text-dark font-bold text-[16px] py-[10]">
-                {transactions[transactions.length - 1].title}
+                {transactions[0].title}
               </Text>
             </>
           )}
@@ -95,5 +95,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     elevation: 1,
     padding: 14,
+    borderRadius: 16,
   },
 });

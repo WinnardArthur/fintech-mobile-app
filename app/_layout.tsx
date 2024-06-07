@@ -8,6 +8,7 @@ import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
 import { Text } from "react-native";
 import "react-native-reanimated";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -70,7 +71,7 @@ const InitialRootLayout = () => {
   }, [isSignedIn, router, segments]);
 
   if (!loaded || !isLoaded) {
-    return <Text>Loading...</Text>;
+    return <Text>Loading....</Text>;
   }
 
   return (
@@ -92,13 +93,15 @@ const InitialRootLayout = () => {
 const RootLayout = () => {
   return (
     <>
-      <ClerkProvider
-        publishableKey={CLERK_PUBLISHABLE_KEY!}
-        tokenCache={tokenCache}
-      >
-        <StatusBar style="light" />
-        <InitialRootLayout />
-      </ClerkProvider>
+      <GestureHandlerRootView>
+        <ClerkProvider
+          publishableKey={CLERK_PUBLISHABLE_KEY!}
+          tokenCache={tokenCache}
+        >
+          <StatusBar style="light" />
+          <InitialRootLayout />
+        </ClerkProvider>
+      </GestureHandlerRootView>
     </>
   );
 };

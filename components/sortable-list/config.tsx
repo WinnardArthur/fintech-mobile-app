@@ -6,7 +6,7 @@ export interface Positions {
 }
 
 const { width } = Dimensions.get("window");
-export const MARGIN = 8;
+export const MARGIN = 20;
 export const SIZE = width / 2 - MARGIN;
 export const COL = 2;
 
