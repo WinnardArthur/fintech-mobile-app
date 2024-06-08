@@ -1,6 +1,11 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Stack, router, useSegments } from "expo-router";
+import {
+  Stack,
+  router,
+  useRootNavigationState,
+  useSegments,
+} from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -9,6 +14,9 @@ import * as SecureStore from "expo-secure-store";
 import { Text } from "react-native";
 import "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -58,17 +66,23 @@ const InitialRootLayout = () => {
     }
   }, [loaded]);
 
-  useEffect(() => {
-    if (!isLoaded) return;
+  const inAuthGroup = segments[0] === "(authenticated)";
 
-    const inAuthGroup = segments[0] === "(authenticated)";
+  const navigation = useRootNavigationState();
+
+  useEffect(() => {
+    if (!navigation?.key) return;
+
+    if (!isLoaded || !isSignedIn) return;
+
+    console.log({ isSignedIn, inAuthGroup });
 
     if (isSignedIn && !inAuthGroup) {
       router.replace("/(authenticated)/(tabs)/home");
     } else if (!isSignedIn && inAuthGroup) {
       router.replace("/");
     } else return;
-  }, [isSignedIn, router, segments]);
+  }, [isSignedIn, inAuthGroup, navigation?.key]);
 
   if (!loaded || !isLoaded) {
     return <Text>Loading....</Text>;
@@ -94,13 +108,15 @@ const RootLayout = () => {
   return (
     <>
       <GestureHandlerRootView>
-        <ClerkProvider
-          publishableKey={CLERK_PUBLISHABLE_KEY!}
-          tokenCache={tokenCache}
-        >
-          <StatusBar style="light" />
-          <InitialRootLayout />
-        </ClerkProvider>
+        <QueryClientProvider client={queryClient}>
+          <ClerkProvider
+            publishableKey={CLERK_PUBLISHABLE_KEY!}
+            tokenCache={tokenCache}
+          >
+            <StatusBar style="light" />
+            <InitialRootLayout />
+          </ClerkProvider>
+        </QueryClientProvider>
       </GestureHandlerRootView>
     </>
   );
