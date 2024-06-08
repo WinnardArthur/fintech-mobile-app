@@ -24,7 +24,7 @@ const Homepage = () => {
     });
   };
 
-  return (
+  return  (
     <ScrollView
       className=""
       contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: 60 }}
