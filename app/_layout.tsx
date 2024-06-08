@@ -14,9 +14,6 @@ import * as SecureStore from "expo-secure-store";
 import { Text } from "react-native";
 import "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -108,15 +105,13 @@ const RootLayout = () => {
   return (
     <>
       <GestureHandlerRootView>
-        <QueryClientProvider client={queryClient}>
-          <ClerkProvider
-            publishableKey={CLERK_PUBLISHABLE_KEY!}
-            tokenCache={tokenCache}
-          >
-            <StatusBar style="light" />
-            <InitialRootLayout />
-          </ClerkProvider>
-        </QueryClientProvider>
+        <ClerkProvider
+          publishableKey={CLERK_PUBLISHABLE_KEY!}
+          tokenCache={tokenCache}
+        >
+          <StatusBar style="light" />
+          <InitialRootLayout />
+        </ClerkProvider>
       </GestureHandlerRootView>
     </>
   );
