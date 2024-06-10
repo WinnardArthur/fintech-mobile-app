@@ -14,6 +14,7 @@ import * as SecureStore from "expo-secure-store";
 import { Text } from "react-native";
 import "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { UserInactivityProvider } from "@/context/user-inactivity";
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -97,6 +98,10 @@ const InitialRootLayout = () => {
         name="(authenticated)/(tabs)"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="(authenticated)/(modals)/lock-screen"
+        options={{ headerShown: false, animation: "none" }}
+      />
     </Stack>
   );
 };
@@ -104,15 +109,17 @@ const InitialRootLayout = () => {
 const RootLayout = () => {
   return (
     <>
-      <GestureHandlerRootView>
-        <ClerkProvider
-          publishableKey={CLERK_PUBLISHABLE_KEY!}
-          tokenCache={tokenCache}
-        >
-          <StatusBar style="light" />
-          <InitialRootLayout />
-        </ClerkProvider>
-      </GestureHandlerRootView>
+      <ClerkProvider
+        publishableKey={CLERK_PUBLISHABLE_KEY!}
+        tokenCache={tokenCache}
+      >
+        <UserInactivityProvider>
+          <GestureHandlerRootView>
+            <StatusBar style="light" />
+            <InitialRootLayout />
+          </GestureHandlerRootView>
+        </UserInactivityProvider>
+      </ClerkProvider>
     </>
   );
 };
