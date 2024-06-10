@@ -5,30 +5,71 @@ import {
   SectionList,
   Image,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { Ionicons } from "@expo/vector-icons";
+import { CartesianChart, Line, useChartPressState } from "victory-native";
+import { Circle, useFont } from "@shopify/react-native-skia";
+import dayjs from "dayjs";
+import * as Haptics from "expo-haptics";
+import type { SharedValue } from "react-native-reanimated";
+
 import { defaultStyles } from "@/constants/Styles";
 import {
   listingsData as currentListingsData,
   infoData as currentInfoData,
+  tickersData,
 } from "@/data";
-import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
-import { CartesianChart, Line } from "victory-native";
+import Animated, { useAnimatedProps } from "react-native-reanimated";
 
 const categories = ["Overview", "News", "Orders", "Transactions"];
 
-const DATA = Array.from({ length: 31 }, (_, i) => ({
-  day: i,
-  highTmp: 40 + 30 * Math.random(),
-}));
+Animated.addWhitelistedNativeProps({ text: true });
+
+const Tooltip = ({
+  x,
+  y,
+}: {
+  x: SharedValue<number>;
+  y: SharedValue<number>;
+}) => {
+  return <Circle cx={x} cy={y} r={8} color={Colors.primary} />;
+};
+
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 const CryptoDetailsPage = () => {
   const { cryptoId } = useLocalSearchParams();
   const headerHeight = useHeaderHeight();
   const [activeCategory, setActiveCategory] = useState(categories[0]);
+
+  const { state, isActive } = useChartPressState({ x: "0", y: { price: 0 } });
+
+  const font = useFont(require("@/assets/fonts/SpaceMono-Regular.ttf"), 12);
+
+  const animatedText = useAnimatedProps(() => {
+    return {
+      text: `${state.y.price.value.value.toFixed(2)} $`,
+      defaultValue: "",
+    };
+  });
+
+  const animatedDateText = useAnimatedProps(() => {
+    const date = new Date(state.x.value.value);
+
+    return {
+      text: `${date.toLocaleDateString()}`,
+      defaultValue: "",
+    };
+  });
+
+  useEffect(() => {
+    if (isActive) Haptics.selectionAsync();
+  }, [isActive]);
 
   const info = currentListingsData.find(
     (listing) => String(listing.id) === cryptoId
@@ -125,13 +166,59 @@ const CryptoDetailsPage = () => {
           </ScrollView>
         )}
         renderItem={(item) => (
-          <>
+          <View className="space-y-10">
             {/* Chart */}
-            <View className="h-[500] bg-green-500">
-              <CartesianChart data={DATA} xKey="day" yKeys={["highTmp"]}>
+            <View className="h-[500]" style={defaultStyles.block}>
+              {!isActive && (
+                <View>
+                  <Text className="text-[30px] font-bold text-dark">
+                    {tickersData[tickersData.length - 1].price.toFixed(2)} $
+                  </Text>
+                  <Text className="text-[16px] text-gray">Today</Text>
+                </View>
+              )}
+              {isActive && (
+                <View>
+                  <AnimatedTextInput
+                    editable={false}
+                    className="text-[36px] font-bold text-dark"
+                    animatedProps={animatedText}
+                  ></AnimatedTextInput>
+                  <AnimatedTextInput
+                    editable={false}
+                    className="text-[18px] text-gray"
+                    animatedProps={animatedDateText}
+                  ></AnimatedTextInput>
+                </View>
+              )}
+              <CartesianChart
+                chartPressState={state}
+                axisOptions={{
+                  font,
+                  tickCount: 5,
+                  labelOffset: { x: -2, y: 0 },
+                  labelColor: Colors.gray,
+                  formatYLabel: (v) => `${v}$ `,
+                  formatXLabel: (v) => `${dayjs(new Date(v)).format("MM/YY")}`,
+                }}
+                data={tickersData}
+                xKey="timestamp"
+                yKeys={["price"]}
+              >
                 {({ points }) => (
-                  // 👇 and we'll use the Line component to render a line path.
-                  <Line points={points.highTmp} color="red" strokeWidth={3} />
+                  <>
+                    <Line
+                      points={points.price}
+                      color={Colors.primary}
+                      strokeWidth={3}
+                    />
+                    {isActive ? (
+                      <Tooltip
+                        x={state.x.position}
+                        y={state.y.price.position}
+                      />
+                    ) : null}
+                  </>
                 )}
               </CartesianChart>
             </View>
@@ -147,7 +234,7 @@ const CryptoDetailsPage = () => {
                 covered by any previous payment system.
               </Text>
             </View>
-          </>
+          </View>
         )}
         sections={[{ data: [{ title: "Chart" }] }]}
       ></SectionList>
