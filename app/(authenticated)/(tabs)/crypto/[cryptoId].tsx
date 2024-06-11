@@ -82,6 +82,7 @@ const CryptoDetailsPage = () => {
     <>
       <SectionList
         showsVerticalScrollIndicator={false}
+        stickySectionHeadersEnabled={true}
         style={{ paddingTop: headerHeight }}
         keyExtractor={(item) => item.title}
         contentInsetAdjustmentBehavior="automatic"
