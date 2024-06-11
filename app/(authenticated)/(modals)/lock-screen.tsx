@@ -8,6 +8,13 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import Colors from "@/constants/Colors";
 import { router } from "expo-router";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 
 const LockScreenPage = () => {
   const { user } = useUser();
@@ -17,11 +24,27 @@ const LockScreenPage = () => {
 
   const codeLength = Array(6).fill(undefined);
 
+  const offset = useSharedValue(0);
+
+  const style = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: offset.value }],
+    };
+  });
+
+  const OFFSET = 20;
+  const TIME = 80;
+
   useEffect(() => {
     if (code.length === 6) {
       if (code.join("") === "123456") {
         router.replace("/home");
       } else {
+        offset.value = withSequence(
+          withTiming(-OFFSET, { duration: TIME / 2 }),
+          withRepeat(withTiming(OFFSET, { duration: TIME }), 4, true),
+          withTiming(0, { duration: TIME / 2 })
+        );
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       }
       setCode([]);
@@ -53,7 +76,7 @@ const LockScreenPage = () => {
       <Text className="text-[24px] font-bold mt-[80] self-center">
         Welcome back, {firstName || "Guest"}
       </Text>
-      <View style={{}} className="flex-row justify-center gap-x-[20] my-[80]">
+      <Animated.View style={style} className="flex-row justify-center gap-x-[20] my-[80]">
         {codeLength.map((_, index) => (
           <View
             key={index}
@@ -63,7 +86,7 @@ const LockScreenPage = () => {
             }}
           />
         ))}
-      </View>
+      </Animated.View>
 
       <View className="px-[70] gap-x-[6] gap-y-[42]">
         <View className="flex-row justify-between">

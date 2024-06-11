@@ -10,7 +10,7 @@ const storage = new MMKV({
 
 export const UserInactivityProvider = ({ children }: { children: any }) => {
   const appState = useRef(AppState.currentState);
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -31,7 +31,9 @@ export const UserInactivityProvider = ({ children }: { children: any }) => {
       appState.current.match(/background/)
     ) {
       const elapsed = Date.now() - (storage.getNumber("startTime") || 0);
-      console.log({ elapsed });
+
+      console.log({ elapsed, isSignedIn, isLoaded });
+
       if (elapsed > 3000 && isSignedIn) {
         console.log("Are you running", { isSignedIn });
         router.replace("/lock-screen");

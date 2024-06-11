@@ -11,10 +11,11 @@ import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
-import { Text } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { UserInactivityProvider } from "@/context/user-inactivity";
+import Colors from "@/constants/Colors";
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -83,7 +84,11 @@ const InitialRootLayout = () => {
   }, [isSignedIn, inAuthGroup, navigation?.key]);
 
   if (!loaded || !isLoaded) {
-    return <Text>Loading....</Text>;
+    return (
+      <View className="flex-1 justify-centr items-center">
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
   }
 
   return (
