@@ -10,7 +10,12 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_dmlhYmxlLXN0YWctNTguY2xlcmsuYWNjb3VudHMuZGV2JA",
+        "CRYPTO_API_KEY": "cf1b2032-65f9-4266-9311-81ea51134462"
+      }
+    }
   },
   "submit": {
     "production": {}
